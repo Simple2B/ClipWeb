@@ -8,7 +8,6 @@ def create_app() -> FastAPI:
     app = FastAPI()
     app.include_router(visit_router)
 
-
     @app.get("/")
     async def root():
         return {"message": "Hello World"}
