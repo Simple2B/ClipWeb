@@ -1,0 +1,18 @@
+asyncpg
+fastapi
+python-dotenv
+tortoise-orm
+uvicorn
+python-jose[cryptography]
+passlib[bcrypt]
+python-multipart
+# pydantic[dotenv]
+
+flake8
+black
+pytest
+
+requests
+asynctest
+asyncio
+fastapi-pagination[tortoise]
