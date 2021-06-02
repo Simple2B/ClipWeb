@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a single version of Python
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: ACOLYTE app
+name: ClipWeb app
 
 on:
   push:
@@ -33,13 +33,13 @@ jobs:
         run: |
           python -m pytest
         env:
-          JWT_SECRET: "TEST_SECRET"
+          JWT_SECRET: 'TEST_SECRET'
           ALGORITHM: HS256
-          SERVER_NAME: ""
+          SERVER_NAME: ''
           SERVER_HOST: http://127.0.0.1:8000
           POSTGRES_DB: acolyte
-          POSTGRES_SERVER: "127.0.0.1"
+          POSTGRES_SERVER: '127.0.0.1'
           POSTGRES_USER: postgres
           POSTGRES_PORT: 5555
-          POSTGRES_PASSWORD: "super_secret_password"
-          GATE_SECRET_TOKEN: "gate_secret"
+          POSTGRES_PASSWORD: 'super_secret_password'
+          GATE_SECRET_TOKEN: 'gate_secret'
