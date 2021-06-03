@@ -60,10 +60,8 @@ def test_set_pinned_patient_negative(
     patient_id = int(patient_url.split("/")[-1])
     check_patients_id(headers, patient_id)
     response = client.post(
-        "/clipweb/pinnedPatients",
+        f"/clipweb/pinnedPatients/{clinician_id}/{patient_id}",
         json={
-            "clinicianId": clinician_id,
-            "patientId": patient_id,
             "pinUnpinFlag": True,
         },
         headers=headers,
@@ -89,8 +87,8 @@ def test_set_pinned_patient_positive(
     monkeypatch.setattr(requests, "get", mock_get)
 
     response = client.post(
-        "/clipweb/pinnedPatients",
-        json={"clinicianId": 1, "patientId": 2, "pinUnpinFlag": True},
+        "/clipweb/pinnedPatients/1/2",
+        json={"pinUnpinFlag": True},
         headers={"Authorization": f"Bearer {TOKEN}"},
     )
     assert response.ok
@@ -105,8 +103,8 @@ def test_set_pinned_patient_positive(
     assert patients[0] == 2
 
     response = client.post(
-        "/clipweb/pinnedPatients",
-        json={"clinicianId": 1, "patientId": 2, "pinUnpinFlag": False},
+        "/clipweb/pinnedPatients/1/2",
+        json={"pinUnpinFlag": False},
         headers={"Authorization": f"Bearer {TOKEN}"},
     )
     assert response.ok

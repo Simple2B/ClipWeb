@@ -13,11 +13,9 @@ from app.logger import log
 router = APIRouter(prefix="/clipweb")
 
 
-@router.post("/pinnedPatients")
-async def setPinnedPatient(data: CheckPatientPin, request: Request):
+@router.post("/pinnedPatients/{clinician_id}/{patient_id}")
+async def setPinnedPatient(data: CheckPatientPin, request: Request, clinician_id: int, patient_id: int):
     headers = {"Authorization": dict(request.headers)["authorization"]}
-    patient_id = data.patientId
-    clinician_id = data.clinicianId
     pin_flag = data.pinUnpinFlag
     try:
         check_patients_id(headers, patient_id)
