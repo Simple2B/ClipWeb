@@ -9,6 +9,7 @@
     "pydantic",
     "pytest",
     "skipif",
+    "starlette",
     "uvicorn"
   ],
   "python.testing.unittestEnabled": false,
