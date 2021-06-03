@@ -6,7 +6,7 @@ from pydantic import AnyHttpUrl, BaseSettings, PostgresDsn, validator
 class Settings(BaseSettings):
     CLIPWEB_API: str = "/api/clipweb"
 
-    SERVER_NAME: str
+    SERVER_NAME: str = "ClibWeb"
     SERVER_HOST: AnyHttpUrl
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
