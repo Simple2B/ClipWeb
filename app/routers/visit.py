@@ -7,7 +7,7 @@ from app.services import (
     check_patients_id,
     ValidateException,
 )
-from app.serializers import CheckPatientPin, CheckPatientPinResponse, pinned_patients
+from app.serializers import CheckPatientPin, CheckPatientPinResponse
 from app.logger import log
 
 router = APIRouter(prefix="/clipweb")
