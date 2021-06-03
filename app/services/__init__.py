@@ -3,7 +3,7 @@
 from .visits import (
     check_clinicians_id,
     check_patients_id,
-    check_data,
-    get_all_pacients_by_clinician,
+    get_all_patients_by_clinician,
     create_or_delete_visit,
+    ValidateException,
 )

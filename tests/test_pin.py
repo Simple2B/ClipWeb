@@ -2,13 +2,18 @@ import pytest
 import asyncio
 from typing import Generator
 from fastapi.testclient import TestClient
+import requests
+from requests.auth import HTTPBasicAuth
 from tortoise.contrib.test import finalizer, initializer
 
 from app.setup import create_app
 from app.services import (
-    get_all_pacients_by_clinician,
+    get_all_patients_by_clinician,
+    check_clinicians_id,
+    check_patients_id,
 )
 from .utils import create_few_visits
+from app.config import settings
 
 # from app.models import ...
 
@@ -29,42 +34,84 @@ def event_loop(client: TestClient) -> Generator:
     yield client.task.get_loop()
 
 
-def test_get_all_pacients(client: TestClient, event_loop: asyncio.AbstractEventLoop):
+def test_get_all_patients(client: TestClient, event_loop: asyncio.AbstractEventLoop):
     event_loop.run_until_complete(create_few_visits())
-    pacients = event_loop.run_until_complete(get_all_pacients_by_clinician(1))
-    assert pacients
-    assert len(pacients) == 2
-    pacients = event_loop.run_until_complete(get_all_pacients_by_clinician(4))
-    assert not pacients
+    patients = event_loop.run_until_complete(get_all_patients_by_clinician(1))
+    assert patients
+    assert len(patients) == 2
+    patients = event_loop.run_until_complete(get_all_patients_by_clinician(4))
+    assert not patients
 
 
-# test user activation
-# def test_set_pinned_patient(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-# response = client.post(
-#     "/clipweb/set_pinned_patient/",
-#     json={
-#         ....
-#     },
-#     headers={"Authorization": f"Bearer {TEST_JWT_TOKEN}"},
-# )
-# pass
+@pytest.mark.skipif(not settings.USERNAME, reason="OTH USERNAME not configured")
+def test_set_pinned_patient_negative(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop
+):
+    auth = HTTPBasicAuth(settings.USERNAME, settings.PASSWORD)
+    response = requests.get("https://covid19-test.oth.io/idp2/users/auth", auth=auth)
+    headers = {"Authorization": f"Bearer {response.json()['token']}"}
+    clinician_id = 1
+    check_clinicians_id(headers, clinician_id)
+    res = requests.get(
+        "https://covid19-test.oth.io/clinician/api/patients", headers=headers
+    )
+    assert res.ok
+    patient_url = res.json()["results"][0]["links"]["patient"]
+    patient_id = int(patient_url.split("/")[-1])
+    check_patients_id(headers, patient_id)
+    response = client.post(
+        "/clipweb/pinnedPatients",
+        json={
+            "clinicianId": clinician_id,
+            "patientId": patient_id,
+            "pinUnpinFlag": True,
+        },
+        headers=headers,
+    )
+    assert response.ok
+    assert response.status_code < 300
 
 
-# def test_check_clinician_id(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-#     check_clinician = check_clinicians_id(TOKEN, 1)
-#     assert check_clinician
+def test_set_pinned_patient_positive(
+    client: TestClient, event_loop: asyncio.AbstractEventLoop, monkeypatch
+):
+    class MockResponse:
+        ok = True
 
+        @staticmethod
+        def json():
+            return {}
 
-# def test_check_patient_id(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-#     check_patient = check_patients_id(TOKEN, 1)
-#     assert check_patient
+    def mock_get(*args, **kwargs):
+        return MockResponse()
 
+    # apply the monkeypatch for requests.get to mock_get
+    monkeypatch.setattr(requests, "get", mock_get)
 
-# def test_check_visit(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-#     checkvisit = check_visit(1, 1)
-#     assert checkvisit
+    response = client.post(
+        "/clipweb/pinnedPatients",
+        json={"clinicianId": 1, "patientId": 2, "pinUnpinFlag": True},
+        headers={"Authorization": f"Bearer {TOKEN}"},
+    )
+    assert response.ok
+    assert response.status_code == 200
+    assert "pinnedPatients" in response.json()
+    assert response.json()["pinnedPatients"]
+    assert len(response.json()["pinnedPatients"]) == 1
+    assert response.json()["pinnedPatients"][0] == 2
+    patients = event_loop.run_until_complete(get_all_patients_by_clinician(1))
+    assert patients
+    assert len(patients) == 1
+    assert patients[0] == 2
 
-
-# def test_create_or_delete_visit(client: TestClient, event_loop: asyncio.AbstractEventLoop):
-#     event_loop.run_until_complete()
-#     pass
+    response = client.post(
+        "/clipweb/pinnedPatients",
+        json={"clinicianId": 1, "patientId": 2, "pinUnpinFlag": False},
+        headers={"Authorization": f"Bearer {TOKEN}"},
+    )
+    assert response.ok
+    assert response.status_code == 200
+    assert "pinnedPatients" in response.json()
+    assert not response.json()["pinnedPatients"]
+    patients = event_loop.run_until_complete(get_all_patients_by_clinician(1))
+    assert not patients

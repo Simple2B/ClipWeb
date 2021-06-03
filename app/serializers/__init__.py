@@ -1,3 +1,3 @@
 # flake8: noqa F401
 
-from .visit import Visit_Pydantic, VisitIn_Pydantic
+from .pinned_patients import CheckPatientPin

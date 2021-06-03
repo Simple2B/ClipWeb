@@ -38,6 +38,9 @@ class Settings(BaseSettings):
             path=f"/{values.get('POSTGRES_DB') or ''}",
         )
 
+    USERNAME: str
+    PASSWORD: str
+
     class Config:
         case_sensitive = True
 

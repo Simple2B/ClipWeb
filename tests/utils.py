@@ -1,23 +1,23 @@
 from datetime import datetime
-from app.models import Visit
+from app.models import PatientPin
 
 
 async def create_test_visit(
-    clinicianId: int = 1,
-    patientId: int = 1,
+    clinician_id: int = 1,
+    patient_id: int = 1,
     timestamp: int = datetime.timestamp(datetime.now()),
-) -> Visit():
+) -> PatientPin():
 
-    test_visit = await Visit.create(
-        clinicianId=clinicianId,
-        patientId=patientId,
+    test_patient_pin = await PatientPin.create(
+        clinicianId=clinician_id,
+        patientId=patient_id,
         timestamp=timestamp,
     )
 
-    return test_visit
+    return test_patient_pin
 
 
 async def create_few_visits():
     for i in range(3):
-        await create_test_visit(clinicianId=i, patientId=i)
-        await create_test_visit(clinicianId=i, patientId=i+5)
+        await create_test_visit(clinician_id=i, patient_id=i)
+        await create_test_visit(clinician_id=i, patient_id=i + 5)

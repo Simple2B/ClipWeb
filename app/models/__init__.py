@@ -1,2 +1,2 @@
 # flake8: noqa F401
-from .visit import Visit
+from .patient_pin import PatientPin
