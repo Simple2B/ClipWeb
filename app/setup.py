@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi_pagination import add_pagination
+from starlette.responses import RedirectResponse
 from app.routers import router as visit_router
 
 
@@ -10,7 +11,7 @@ def create_app() -> FastAPI:
 
     @app.get("/")
     async def root():
-        return {"message": "Hello World"}
+        return RedirectResponse(url="/docs")
 
     add_pagination(app)
     return app
