@@ -35,5 +35,6 @@ async def setPinnedPatient(
             e.response.status_code,
         )
         raise HTTPException(
-            status_code=e.response.status_code, detail=e.response.reason
+            status_code=e.response.status_code,
+            detail=e.response.json() if e.response.text else e.response.reason,
         )
