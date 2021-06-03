@@ -1,3 +1,4 @@
+from typing import List
 from pydantic import BaseModel
 
 
@@ -6,4 +7,4 @@ class CheckPatientPin(BaseModel):
 
 
 class CheckPatientPinResponse(BaseModel):
-    pinnedPatients: list
+    pinnedPatients: List[int]
