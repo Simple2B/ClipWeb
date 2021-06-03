@@ -15,7 +15,7 @@ Project Clipweb placed in GitHub repository [here](https://github.com/Simple2B/C
 Let's download the project from GitHub:
 
 ```
-git clone https://github.com/Simple2B/NITRIX.git .
+git clone https://github.com/Simple2B/ClipWeb.git .
 ```
 
 ## Environment variable
