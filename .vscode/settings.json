@@ -7,6 +7,8 @@
     "asyncio",
     "finalizer",
     "pydantic",
+    "pytest",
+    "skipif",
     "uvicorn"
   ],
   "python.testing.unittestEnabled": false,
