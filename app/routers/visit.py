@@ -7,14 +7,19 @@ from app.services import (
     check_patients_id,
     ValidateException,
 )
-from app.serializers import CheckPatientPin
+from app.serializers import CheckPatientPin, CheckPatientPinResponse, pinned_patients
 from app.logger import log
 
 router = APIRouter(prefix="/clipweb")
 
 
-@router.post("/pinnedPatients/{clinician_id}/{patient_id}")
-async def setPinnedPatient(data: CheckPatientPin, request: Request, clinician_id: int, patient_id: int):
+@router.post(
+    "/pinnedPatients/{clinician_id}/{patient_id}",
+    response_model=CheckPatientPinResponse,
+)
+async def setPinnedPatient(
+    data: CheckPatientPin, request: Request, clinician_id: int, patient_id: int
+):
     headers = {"Authorization": dict(request.headers)["authorization"]}
     pin_flag = data.pinUnpinFlag
     try:
