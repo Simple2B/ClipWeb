@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter, Request, HTTPException
 
 from app.services import (
     get_all_patients_by_clinician,
@@ -34,4 +34,7 @@ async def setPinnedPatient(
             "Response from 3rd party service is [%s]",
             e.response.status_code,
         )
-        return e.response
+        raise HTTPException(
+            status_code=e.response.status_code,
+            detail=e.response.json() if e.response.text else e.response.reason,
+        )

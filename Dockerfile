@@ -6,6 +6,7 @@ WORKDIR /app
 # set environment varibles
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
+ENV PIP_DISABLE_PIP_VERSION_CHECK=on
+
 COPY . /app
-RUN python -m pip install --upgrade pip
 RUN pip install --no-cache-dir -r requirements.txt
