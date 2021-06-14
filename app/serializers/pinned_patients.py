@@ -7,4 +7,4 @@ class CheckPatientPin(BaseModel):
 
 
 class CheckPatientPinResponse(BaseModel):
-    pinnedPatients: List[int]
+    pinnedPatients: List[dict]

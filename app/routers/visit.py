@@ -1,10 +1,8 @@
-from fastapi import APIRouter, Request, HTTPException
+from fastapi import APIRouter, HTTPException
 
 from app.services import (
     get_all_patients_by_clinician,
     create_or_delete_visit,
-    check_clinicians_id,
-    check_patients_id,
     ValidateException,
 )
 from app.serializers import CheckPatientPin, CheckPatientPinResponse
@@ -17,14 +15,22 @@ router = APIRouter(prefix="/clipweb")
     "/pinnedPatients/{clinician_id}/{patient_id}",
     response_model=CheckPatientPinResponse,
 )
-async def setPinnedPatient(
-    data: CheckPatientPin, request: Request, clinician_id: int, patient_id: int
-):
-    headers = {"Authorization": dict(request.headers)["authorization"]}
+async def setPinnedPatient(data: CheckPatientPin, clinician_id: str, patient_id: str):
+    """[Main method]
+
+    Args:
+        data (CheckPatientPin): [Flag for create/delete pin]
+        clinician_id (str): [ID]
+        patient_id (str): [ID]
+
+    Raises:
+        HTTPException: []
+
+    Returns:
+        [JSON]: [All patients IDs by clinician ID]
+    """
     pin_flag = data.pinUnpinFlag
     try:
-        check_patients_id(headers, patient_id)
-        check_clinicians_id(headers, clinician_id)
         await create_or_delete_visit(clinician_id, patient_id, pin_flag)
         patients = await get_all_patients_by_clinician(clinician_id)
         return {"pinnedPatients": patients}

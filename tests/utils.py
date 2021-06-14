@@ -7,6 +7,7 @@ async def create_test_visit(
     patient_id: int = 1,
     timestamp: int = datetime.timestamp(datetime.now()),
 ) -> PatientPin():
+    """Creating test data for tests"""
 
     test_patient_pin = await PatientPin.create(
         clinicianId=clinician_id,
