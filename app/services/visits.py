@@ -1,6 +1,5 @@
 from datetime import datetime
 
-import requests
 from tortoise.query_utils import Q
 
 from app.models import PatientPin
@@ -15,30 +14,6 @@ class ValidateException(Exception):
     @property
     def response(self):
         return self.response_from_api
-
-
-def check_clinicians_id(headers: dict, clinician_id: str or int) -> None:
-    """[Check if clinician with the id exist]"""
-    response = requests.get(
-        f"https://covid19-test.oth.io/clinician/api/clinicians/{clinician_id}",
-        headers=headers,
-    )
-    if not response.ok:
-        log(log.WARNING, "Clinician with ID [%s] doesn't exist", clinician_id)
-        raise ValidateException(response)
-    return response.json()
-
-
-def check_patients_id(headers: dict, patient_id: str or int) -> None:
-    """[Check if patient with the id exist]"""
-    response = requests.get(
-        f"https://covid19-test.oth.io/clinician/api/patients/{patient_id}",
-        headers=headers,
-    )
-    if not response.ok:
-        log(log.WARNING, "Patient with ID [%s] doesn't exist", patient_id)
-        raise ValidateException(response)
-    return response.json()
 
 
 async def create_or_delete_visit(
@@ -63,9 +38,7 @@ async def create_or_delete_visit(
 
 
 async def get_all_patients_by_clinician(clinician_id: str or int):
-    """[Get all IDs patients by the clinician]"""
-    patients = []
+    """[Get all IDs patients by the clinician ID]"""
     visits = await PatientPin.filter(clinicianId=clinician_id).order_by("timestamp")
-    for visit in visits:
-        patients.append(visit.patientId)
+    patients = [{"uniqueId": visit.patientId} for visit in visits]
     return patients
