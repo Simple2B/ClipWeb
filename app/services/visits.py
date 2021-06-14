@@ -39,8 +39,6 @@ async def create_or_delete_visit(
 
 async def get_all_patients_by_clinician(clinician_id: str or int):
     """[Get all IDs patients by the clinician ID]"""
-    patients = []
     visits = await PatientPin.filter(clinicianId=clinician_id).order_by("timestamp")
-    for visit in visits:
-        patients.append({"uniqueId": visit.patientId})
+    patients = [{"uniqueId": visit.patientId} for visit in visits]
     return patients
