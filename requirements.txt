@@ -15,4 +15,4 @@ pytest
 requests
 asynctest
 asyncio
-fastapi-pagination[tortoise]
+# fastapi-pagination[tortoise]

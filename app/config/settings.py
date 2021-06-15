@@ -7,7 +7,7 @@ class Settings(BaseSettings):
     CLIPWEB_API: str = "/api/clipweb"
 
     SERVER_NAME: str = "ClipWeb"
-    SERVER_HOST: AnyHttpUrl
+    SERVER_HOST: AnyHttpUrl = "http://127.0.0.1:8000"
     BACKEND_CORS_ORIGINS: List[AnyHttpUrl] = []
 
     @validator("BACKEND_CORS_ORIGINS", pre=True)
@@ -18,11 +18,11 @@ class Settings(BaseSettings):
             return v
         raise ValueError(v)
 
-    POSTGRES_SERVER: str
-    POSTGRES_USER: str
-    POSTGRES_PASSWORD: str
-    POSTGRES_DB: str
-    POSTGRES_PORT: str
+    POSTGRES_SERVER: str = "localhost"
+    POSTGRES_USER: str = "db_user"
+    POSTGRES_PASSWORD: str = "password"
+    POSTGRES_DB: str = "db"
+    POSTGRES_PORT: str = "5432"
     DATABASE_URI: Optional[PostgresDsn] = None
 
     @validator("DATABASE_URI", pre=True)
